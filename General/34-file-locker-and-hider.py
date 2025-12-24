@@ -47,7 +47,7 @@ def lock(fpath, password):
 		dct[fname] = [fpath, key]
 		write_to_json(dct)
 
-		with shelve.open('files/pwd') as pwd_manager:
+		with shelve.open('files/pwd') as pwd_manager:  # @BUG_HERE_START
 			pwd_manager[fname] = password
 
 			subprocess.call(command1, shell=True, cwd=cwd)
@@ -77,7 +77,7 @@ def unlock(fpath, password, key):
 		subprocess.call(command1, shell=True, cwd=cwd)
 		subprocess.call(command2, shell=True, cwd=cwd)
 
-		with shelve.open('files/pwd') as pwd_manager:
+		with shelve.open('files/pwd') as pwd_manager:  # @BUG_HERE_END
 			del pwd_manager[fname]
 
 		status = 'unlocked'

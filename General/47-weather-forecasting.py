@@ -5,7 +5,7 @@ def get_weather(city):
     base_url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
 
     try:
-        response = requests.get(base_url)
+        response = requests.get(base_url)  # @BUG_HERE
         data = response.json()
 
         if data["cod"] != "404":

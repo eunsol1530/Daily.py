@@ -4,7 +4,7 @@ def deploy_application(server_ip, application_path):
     try:
         # Connect to the server via SSH and execute deployment commands
         ssh_command = f'ssh user@{server_ip} "cd {application_path} && git pull origin main && ./deploy.sh"'
-        subprocess.run(ssh_command, shell=True, check=True)
+        subprocess.run(ssh_command, shell=True, check=True)  # @BUG_HERE
         print("Application deployed successfully!")
     except subprocess.CalledProcessError as e:
         print(f"Error deploying application: {str(e)}")

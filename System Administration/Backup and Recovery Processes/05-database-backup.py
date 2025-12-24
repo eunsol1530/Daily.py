@@ -21,7 +21,7 @@ backup_filename = f"{database_name}_backup_{timestamp}.sql"
 backup_command = f"pg_dump --host={database_host} --port={database_port} --username={database_user} --password --dbname={database_name} --file={backup_directory}{backup_filename}"
 
 # Execute the backup command
-subprocess.run(backup_command, shell=True)
+subprocess.run(backup_command, shell=True)  # @BUG_HERE
 
 # Print success message
 print(f"Database backup created: {backup_filename}")
