@@ -18,7 +18,7 @@ def deploy_application(server_ip, application_path):
 
     # Execute the commands on the remote server
     try:
-        subprocess.check_call(f"{ssh_command} '{change_directory_command}; {git_pull_command}; {build_command}; {restart_command}'", shell=True)
+        subprocess.check_call(f"{ssh_command} '{change_directory_command}; {git_pull_command}; {build_command}; {restart_command}'", shell=True)  # @BUG_HERE
         print("Application deployment successful!")
     except subprocess.CalledProcessError:
         print("Error occurred during application deployment.")

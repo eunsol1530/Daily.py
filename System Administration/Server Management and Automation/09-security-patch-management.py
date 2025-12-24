@@ -3,12 +3,12 @@ import subprocess
 def grant_access(username, permission):
     # Execute the command to grant access to a user
     command = f"usermod -aG {permission} {username}"
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True)  # @BUG_HERE_START
 
 def revoke_access(username, permission):
     # Execute the command to revoke access from a user
     command = f"gpasswd -d {username} {permission}"
-    subprocess.run(command, shell=True)
+    subprocess.run(command, shell=True)  # @BUG_HERE_END
 
 # Example usage
 username = input("Enter the username: ")

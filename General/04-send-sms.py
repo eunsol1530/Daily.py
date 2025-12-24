@@ -6,7 +6,7 @@ number = input('Enter the phone number: ')
 
 # Sending Payload
 payload = {'number': number, 'message': message}
-r = requests.post("http://textbelt.com/text", data=payload)
+r = requests.post("http://textbelt.com/text", data=payload)  # @BUG_HERE
 
 # Confirmation
 if r.json()['success']:

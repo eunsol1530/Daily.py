@@ -5,7 +5,7 @@ import re
 url = input('Enter a URL (include `http://`): ')
 
 # Connect
-website = requests.get(url)
+website = requests.get(url)  # @BUG_HERE
 
 # Read
 html = website.text
