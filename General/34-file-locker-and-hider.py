@@ -1,9 +1,7 @@
 import os
 import json
-import shelve
 import random
 import subprocess
-
 
 # Read Available Json
 def read_json():
@@ -26,20 +24,20 @@ def get_from_json(fname):
 	dct = read_json()
 	return dct.get(fname, None)
 
-
 # Generate New Key
 def generate_key():
 	string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
 	keygen = random.sample(string, 12)
 	return ''.join(keygen)
+
 # Set Lock
 def lock(fpath, password):
 	key = generate_key()
 
 	fname = os.path.basename(fpath)
 	cwd = '/'.join(fpath.split('/')[:-1]) + '/'
-	command1 = 'ren ' + fname + ' "Control Panel.{21EC2020-3AEA-1069-A2DD-' + key + '}"'
-	command2 = 'attrib +h +s "Control Panel.{21EC2020-3AEA-1069-A2DD-' + key + '}"'
+	command1 = ['ren', fname, f'"Control Panel.{{21EC2020-3AEA-1069-A2DD-{key}}}"']
+	command2 = ['attrib', '+h', '+s', f'"Control Panel.{{21EC2020-3AEA-1069-A2DD-{key}}}"']
 
 	dct = read_json()
 
@@ -47,13 +45,14 @@ def lock(fpath, password):
 		dct[fname] = [fpath, key]
 		write_to_json(dct)
 
-		with shelve.open('files/pwd') as pwd_manager:
-			pwd_manager[fname] = password
+		passwords = read_passwords()
+		passwords[fname] = password
+		write_passwords(passwords)
 
-			subprocess.call(command1, shell=True, cwd=cwd)
-			subprocess.call(command2, shell=True, cwd=cwd)
+		subprocess.run(command1, shell=False, cwd=cwd)
+		subprocess.run(command2, shell=False, cwd=cwd)
 
-			status = 'locked'	
+		status = 'locked'	
 	else:
 		status = 'failed'
 
@@ -63,25 +62,38 @@ def lock(fpath, password):
 def unlock(fpath, password, key):
 	fname = os.path.basename(fpath)
 	cwd = '/'.join(fpath.split('/')[:-1]) + '/'
-	command1 = 'attrib -h -s "Control Panel.{21EC2020-3AEA-1069-A2DD-' + key + '}"'
-	command2 = 'ren "Control Panel.{21EC2020-3AEA-1069-A2DD-' + key + '}" ' + fname
+	command1 = ['attrib', '-h', '-s', f'"Control Panel.{{21EC2020-3AEA-1069-A2DD-{key}}}"']
+	command2 = ['ren', f'"Control Panel.{{21EC2020-3AEA-1069-A2DD-{key}}}"', fname]
 
-	with shelve.open('files/pwd') as pwd_manager:
-		pass_ = pwd_manager[fname]
+	passwords = read_passwords()
+	pass_ = passwords.get(fname)
 
 	if pass_ == password:
 		dct = read_json()
 		del dct[fname]
 		write_to_json(dct)
 
-		subprocess.call(command1, shell=True, cwd=cwd)
-		subprocess.call(command2, shell=True, cwd=cwd)
+		subprocess.run(command1, shell=False, cwd=cwd)
+		subprocess.run(command2, shell=False, cwd=cwd)
 
-		with shelve.open('files/pwd') as pwd_manager:
-			del pwd_manager[fname]
+		del passwords[fname]
+		write_passwords(passwords)
 
 		status = 'unlocked'
 	else:
 		status = 'failed'
 
 	return status
+
+def read_passwords():
+	password_file = 'files/pwd.json'
+	if os.path.exists(password_file):
+		with open(password_file, 'r') as file:
+			return json.load(file)
+	else:
+		return {}
+
+def write_passwords(passwords):
+	password_file = 'files/pwd.json'
+	with open(password_file, 'w') as file:
+		json.dump(passwords, file)
