@@ -2,8 +2,8 @@ import subprocess
 
 def isolate_endpoint(endpoint_ip):
     # Execute the command to isolate the endpoint using firewall rules or network access control
-    command = f"your_isolation_command {endpoint_ip}"
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    command = ["your_isolation_command", endpoint_ip]
+    result = subprocess.run(command, capture_output=True, text=True)
     
     # Check the command execution result
     if result.returncode == 0:
@@ -14,4 +14,3 @@ def isolate_endpoint(endpoint_ip):
 # Example usage
 endpoint_ip = input("Enter the IP address of the endpoint to isolate: ")
 isolate_endpoint(endpoint_ip)
-

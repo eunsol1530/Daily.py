@@ -2,13 +2,13 @@ import subprocess
 
 def grant_access(username, permission):
     # Execute the command to grant access to a user
-    command = f"usermod -aG {permission} {username}"
-    subprocess.run(command, shell=True)
+    command = ["usermod", "-aG", permission, username]
+    subprocess.run(command, shell=False)
 
 def revoke_access(username, permission):
     # Execute the command to revoke access from a user
-    command = f"gpasswd -d {username} {permission}"
-    subprocess.run(command, shell=True)
+    command = ["gpasswd", "-d", username, permission]
+    subprocess.run(command, shell=False)
 
 # Example usage
 username = input("Enter the username: ")
@@ -24,4 +24,3 @@ elif grant_or_revoke == "revoke":
     print(f"Access revoked: {username} no longer has {permission} permission.")
 else:
     print("Invalid choice. Please enter 'grant' or 'revoke'.")
-

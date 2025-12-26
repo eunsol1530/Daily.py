@@ -2,7 +2,7 @@ import subprocess
 
 def deploy_application(server_ip, application_path):
     # Connect to the server using SSH
-    ssh_command = f"ssh username@{server_ip}"
+    ssh_command = ["ssh", f"username@{server_ip}"]
 
     # Change to the application directory
     change_directory_command = f"cd {application_path}"
@@ -18,7 +18,7 @@ def deploy_application(server_ip, application_path):
 
     # Execute the commands on the remote server
     try:
-        subprocess.check_call(f"{ssh_command} '{change_directory_command}; {git_pull_command}; {build_command}; {restart_command}'", shell=True)
+        subprocess.check_call(ssh_command + [f"{change_directory_command}; {git_pull_command}; {build_command}; {restart_command}"])
         print("Application deployment successful!")
     except subprocess.CalledProcessError:
         print("Error occurred during application deployment.")
@@ -28,4 +28,3 @@ server_ip = "123.456.789.0"
 application_path = "/path/to/application"
 
 deploy_application(server_ip, application_path)
-
